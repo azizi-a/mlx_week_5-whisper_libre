@@ -24,7 +24,6 @@ def evaluate_model(model, data_loader_test):
   model.eval()
 
   tokenizer = whisper.tokenizer.get_tokenizer(model.is_multilingual)
-  print(tokenizer)
   start_token = tokenizer.sot
   pad_token = tokenizer.eot
 
