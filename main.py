@@ -31,18 +31,19 @@ def evaluate_model(model, data_loader_test):
   accuracy = []
 
   for _, mel, text in tqdm(data_loader_test, desc="Evaluating"):
+    mel = mel.to(device)
     # Encode all texts in batch
     target_ids = [tokenizer.encode(t) for t in text]
     # Convert to padded tensor in using pad_sequence
     target_ids = [torch.tensor(ids, dtype=torch.long, device=device) for ids in target_ids]
-    target_ids = torch.nn.utils.rnn.pad_sequence(target_ids, batch_first=True, padding_value=pad_token)
+    target_ids = torch.nn.utils.rnn.pad_sequence(target_ids, batch_first=True, padding_value=pad_token).to(device)
     # Create the input tokens
     start_token_tensor = torch.tensor([start_token], dtype=torch.long, device=device).repeat(len(text), 1)
     input_tks = torch.cat([start_token_tensor, target_ids], dim=1)
 
     # Forward pass
     predictions = model(tokens=input_tks, mel=mel)
-    remove_sot = input_tks[:, 1:]
+    remove_sot = input_tks[:, 1:].to(device)
     predictions = predictions[:, :-1, :]
 
     # Calculate accuracy
@@ -69,15 +70,16 @@ def train_model(model, data_loader_train, epoch=0):
   criterion = torch.nn.CrossEntropyLoss()
 
   for _, mel, text in tqdm(data_loader_train, desc="Training epoch"):
+    mel = mel.to(device)
     target_ids = [tokenizer.encode(t) for t in text]
     target_ids = [torch.tensor(ids, dtype=torch.long, device=device) for ids in target_ids]
-    target_ids = torch.nn.utils.rnn.pad_sequence(target_ids, batch_first=True, padding_value=pad_token)
+    target_ids = torch.nn.utils.rnn.pad_sequence(target_ids, batch_first=True, padding_value=pad_token).to(device)
     start_token_tensor = torch.tensor([start_token], dtype=torch.long, device=device).repeat(len(text), 1)
     input_tks = torch.cat([start_token_tensor, target_ids], dim=1)
 
     # Forward pass
     predictions = model(tokens=input_tks, mel=mel)
-    remove_sot = input_tks[:, 1:]
+    remove_sot = input_tks[:, 1:].to(device)
     predictions = predictions[:, :-1, :]
     loss = criterion(predictions.transpose(1, 2), remove_sot)
 

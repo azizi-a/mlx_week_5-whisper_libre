@@ -15,6 +15,7 @@ class LibreSpeechDataset(torch.utils.data.Dataset):
       split=split,
       streaming=streaming,
     )
+    self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
   def __len__(self):
     if self.streaming:
