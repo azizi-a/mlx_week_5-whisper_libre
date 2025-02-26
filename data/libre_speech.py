@@ -5,7 +5,7 @@ import numpy as np
 
 
 class LibreSpeechDataset(torch.utils.data.Dataset):
-  def __init__(self, data_dir="openslr/librispeech_asr", split="train.100", streaming=True):
+  def __init__(self, split, streaming, data_dir="openslr/librispeech_asr"):
     super().__init__()
     self.split = split
     self.streaming = streaming
@@ -51,5 +51,6 @@ class LibreSpeechDataset(torch.utils.data.Dataset):
 
 if __name__ == "__main__":
   ds = LibreSpeechDataset(split="train.100", streaming=True)
+  # print(ds.dataset.keys())
   print(len(ds))
   print(ds[0])
