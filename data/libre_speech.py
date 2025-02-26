@@ -5,13 +5,12 @@ import numpy as np
 
 
 class LibreSpeechDataset(torch.utils.data.Dataset):
-  def __init__(self, split, streaming, data_dir="openslr/librispeech_asr"):
+  def __init__(self, split, streaming, data_dir="ahazeemi/librispeech10h"):
     super().__init__()
     self.split = split
     self.streaming = streaming
     self.dataset = datasets.load_dataset(
       data_dir,
-      "clean",
       split=split,
       streaming=streaming,
     )
@@ -33,7 +32,7 @@ class LibreSpeechDataset(torch.utils.data.Dataset):
     audio = whisper.pad_or_trim(audio)
     audio = np.array(audio, dtype=np.float32)
     mel = whisper.log_mel_spectrogram(audio)
-    text = data["text"]
+    text = data["text"].capitalize()
     return audio, mel, text
 
   def collate(self, batch):
@@ -51,7 +50,7 @@ class LibreSpeechDataset(torch.utils.data.Dataset):
 
 
 if __name__ == "__main__":
-  ds = LibreSpeechDataset(split="train.100", streaming=True)
+  ds = LibreSpeechDataset(split="train.10", streaming=True)
   # print(ds.dataset.keys())
   print(len(ds))
   print(ds[0])

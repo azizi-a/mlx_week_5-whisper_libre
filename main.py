@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 # Load the dataset
-ds_train = LibreSpeechDataset(split="train.100", streaming=True)
+ds_train = LibreSpeechDataset(split="train.10", streaming=True)
 ds_test = LibreSpeechDataset(split="test", streaming=True)
 
 data_loader_train = DataLoader(ds_train, batch_size=16, collate_fn=ds_train.collate, num_workers=1)
